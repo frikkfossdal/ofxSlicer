@@ -9,11 +9,13 @@
 #include "Triangles.hpp"
 #include "ofxAssimpModelLoader.h"
 
-class ofxSlicer{
+class ofxSlicer : public ofThread{
 public:
     //methods
     ofxSlicer();
-    ofxSlicer(string path);
+
+    void slice();
+    void loadFile(string _pathToFile); 
     
     //variables
     ofxAssimpModelLoader model;
@@ -21,6 +23,7 @@ public:
     std::vector<Layer> layers;
     float layerHeight;
 private:
+    
     void buildTriangles();
     void sortTriangles();
 };
