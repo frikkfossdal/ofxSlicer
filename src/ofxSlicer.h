@@ -18,12 +18,15 @@ public:
     void loadFile(string _pathToFile); 
     
     //variables
+    float layerHeight;
+    float layerMin;
+    float layerMax;
     ofxAssimpModelLoader model;
     std::vector<Triangles> triangles;
     std::vector<Layer> layers;
-    float layerHeight;
 private:
     
     void buildTriangles();
     void sortTriangles();
+    void createLayers();
 };
