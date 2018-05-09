@@ -27,7 +27,6 @@ public:
     std::vector<Triangles> triangles;
     std::vector<Layer> layers;
 private:
-    
     void buildTriangles();
     void sortTriangles();
     void createLayers();
