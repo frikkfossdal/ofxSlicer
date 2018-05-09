@@ -8,7 +8,7 @@
 #include "ofxSlicer.h"
 
 ofxSlicer::ofxSlicer(){
-    
+    layerHeight = 0.01; 
 }
 void ofxSlicer::loadFile(string _pathToFile){
     //Try/catch not working. Fix it!
@@ -67,10 +67,24 @@ struct compareVector{
 };
 void ofxSlicer::sortTriangles(){
     std::sort(triangles.begin(), triangles.end(), compareVector());
+    findPerim();
 }
 void ofxSlicer::createLayers(){
     int numberOfLayers = (layerMax-layerMin)/layerHeight;
     for(int i = 0; i < numberOfLayers; i++){
         layers.push_back(Layer(layerHeight*i));
     }
+}
+void ofxSlicer::findPerim(){
+    Triangles lastTriangle = triangles.back();
+    Triangles firstTriangle = triangles.front();
+    layerMax = lastTriangle.zMax;
+    layerMin = firstTriangle.zMin;
+}
+void ofxSlicer::showCalculatedTriangles(){
+    
+    
+}
+void ofxSlicer::showAssimpModel(){
+    model.drawWireframe();
 }

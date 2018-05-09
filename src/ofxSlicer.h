@@ -15,7 +15,9 @@ public:
     ofxSlicer();
 
     void slice();
-    void loadFile(string _pathToFile); 
+    void loadFile(string _pathToFile);
+    void showCalculatedTriangles();
+    void showAssimpModel();
     
     //variables
     float layerHeight;
@@ -29,4 +31,5 @@ private:
     void buildTriangles();
     void sortTriangles();
     void createLayers();
+    void findPerim();
 };

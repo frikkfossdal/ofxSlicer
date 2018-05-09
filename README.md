@@ -2,7 +2,8 @@
 
 A slicer for doing parallel processing in additive manufacturing. Currently under heavy development
 
-================
+## The Slicer
+
 The algorithms behind the slicer is mostly motivated by the work presented in this [paper.](http://www.dainf.ct.utfpr.edu.br/%7Emurilo/public/CAD-slicing.pdf) In the paper, the authors claims that they have developed a slicing algorithm that is time-wise optimal compared to other slicing algorithms known in litterature./Users/frikkfossdal/GitHub/fluffy-octo-potato/README.md We´ll see about that! The slicing algorithm goes something like this:
 
 1. Create a list containing all triangles of the mesh model.
