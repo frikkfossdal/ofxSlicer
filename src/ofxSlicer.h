@@ -18,6 +18,7 @@ public:
     void loadFile(string _pathToFile);
     void showCalculatedTriangles();
     void showAssimpModel();
+    void showSegments();
     
     //variables
     float layerHeight;
@@ -32,3 +33,6 @@ private:
     void createLayers();
     void findPerim();
 };
+//TODO:
+//1. Add segments
+//2. Create jobs 

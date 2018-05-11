@@ -88,3 +88,6 @@ void ofxSlicer::showCalculatedTriangles(){
 void ofxSlicer::showAssimpModel(){
     model.drawWireframe();
 }
+void ofxSlicer::showSegments(){
+    //draw all segments for each layer
+}
