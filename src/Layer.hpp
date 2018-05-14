@@ -10,14 +10,16 @@
 
 #include "ofMain.h"
 #include "Triangles.hpp"
+#include "Job.hpp"
 #include <stdio.h>
 class Layer{
 public:
     //Variables
     float layerHeight;
     std::vector<ofVec3f> intersectionpoints;
-    std::vector<ofPolyline> segments;
-    std::vector<ofPolyline> contours;
+    std::vector<ofPolyline> segments; //remove when ready
+    std::vector<ofPolyline> contours; //remove when ready
+    std::vector<Job> jobs; 
     
     //Constructor
     Layer();

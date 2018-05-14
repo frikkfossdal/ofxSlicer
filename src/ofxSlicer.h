@@ -11,14 +11,14 @@
 
 class ofxSlicer : public ofThread{
 public:
-    //methods
+    //constructor
     ofxSlicer();
-
+    
+    //methods
     void slice();
     void loadFile(string _pathToFile);
-    void showCalculatedTriangles();
     void showAssimpModel();
-    void showSegments();
+    void showSegments(int _layer);
     
     //variables
     float layerHeight;

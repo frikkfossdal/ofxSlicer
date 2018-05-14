@@ -81,13 +81,11 @@ void ofxSlicer::findPerim(){
     layerMax = lastTriangle.zMax;
     layerMin = firstTriangle.zMin;
 }
-void ofxSlicer::showCalculatedTriangles(){
-    
-    
-}
 void ofxSlicer::showAssimpModel(){
+    ofSetColor(255, 15);
     model.drawWireframe();
 }
-void ofxSlicer::showSegments(){
+void ofxSlicer::showSegments(int _layer){
+    layers[_layer].show(); 
     //draw all segments for each layer
 }
