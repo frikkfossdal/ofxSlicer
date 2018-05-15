@@ -8,7 +8,8 @@
 #include "ofxSlicer.h"
 
 ofxSlicer::ofxSlicer(){
-    layerHeight = 0.01; 
+    layerHeight = 0.01;
+    sliceFinished = false;
 }
 void ofxSlicer::loadFile(string _pathToFile){
     //Try/catch not working. Fix it!
@@ -88,4 +89,31 @@ void ofxSlicer::showAssimpModel(){
 void ofxSlicer::showSegments(int _layer){
     layers[_layer].show(); 
     //draw all segments for each layer
+}
+void ofxSlicer::cleanSlicer(){
+    triangles.clear();
+    layers.clear();
+}
+
+// ---------------------THREADING-------------------------
+void ofxSlicer::startSlice(){
+    startThread();
+}
+void ofxSlicer::stopSlice(){
+    stopThread();
+}
+void ofxSlicer::threadedFunction(){
+    while(isThreadRunning())
+    {
+        sliceFinished = false;
+        std:: cout << "i am a thread and i am running" << endl;
+        buildTriangles();
+        createLayers();
+        for(auto it = layers.begin(); it!=layers.end(); it++){
+            it->calculate(triangles);
+        }
+        stopSlice();
+        sliceFinished = true;
+        std::cout << "sliced!" << endl; 
+    }
 }

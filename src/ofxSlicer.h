@@ -19,11 +19,16 @@ public:
     void loadFile(string _pathToFile);
     void showAssimpModel();
     void showSegments(int _layer);
+    void cleanSlicer(); 
+    void startSlice();
+    void stopSlice();
+    void threadedFunction();
     
     //variables
     float layerHeight;
     float layerMin;
     float layerMax;
+    bool sliceFinished; 
     ofxAssimpModelLoader model;
     std::vector<Triangles> triangles;
     std::vector<Layer> layers;
