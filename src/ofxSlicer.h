@@ -28,15 +28,22 @@ public:
     float layerHeight;
     float layerMin;
     float layerMax;
-    bool sliceFinished; 
+    bool sliceFinished;
+    bool isActive;
+    bool hasModel;
+    bool abortFlag; 
     ofxAssimpModelLoader model;
-    std::vector<Triangles> triangles;
+    std::vector<Triangles> allTriangles;
+    std::vector<Triangles> activeTriangles;
     std::vector<Layer> layers;
 private:
     void buildTriangles();
     void sortTriangles();
     void createLayers();
     void findPerim();
+    void findIntersectionPoints(std::vector<Layer> _layers);
+    void findJobs(std::vector<Layer> _layers);
+    void intersectionCalc(ofVec3f _target0, ofVec3f _target1, ofVec3f _orig, Layer &currentLayer);
 };
 //TODO:
 //1. Add segments
