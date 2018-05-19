@@ -71,11 +71,11 @@ void ofxSlicer::createLayers(){
 }
 void ofxSlicer::findIntersectionPoints(std::vector<Layer> _layers){
     activeTriangles = allTriangles;
-    for(auto l = _layers.begin(); l != _layers.end(); l++){
-        //loop trough all triangles for each layer
+    
+    for(int l = 0; l < layers.size(); l++){
         for(auto t = activeTriangles.begin(); t != activeTriangles.end();){
             //remove non-active triangles
-            if(t->zMin > l->layerHeight){
+            if(t->zMin > layers[l].layerHeight){
                 t = activeTriangles.erase(t);
             }
             //calculate intersectionPoints for layer
@@ -103,13 +103,13 @@ void ofxSlicer::findIntersectionPoints(std::vector<Layer> _layers){
                 if(topSide.size() > 1){
                     //Two points on topside.
                     if(bottomSide.size() > 0){
-                        intersectionCalc(topSide[0], topSide[1], bottomSide[0], *l);
+                        intersectionCalc(topSide[0], topSide[1], bottomSide[0], layers[l]);
                     }
                 }
                 else if(bottomSide.size() > 1){
                     //Two points on bottomside
                     if(topSide.size() > 0){
-                        intersectionCalc(bottomSide[0], bottomSide[1], topSide[0], *l);
+                        intersectionCalc(bottomSide[0], bottomSide[1], topSide[0], layers[l]);
                     }
                 }
                 else{
@@ -137,6 +137,7 @@ void ofxSlicer::showSegments(int _layer){
 }
 void ofxSlicer::cleanSlicer(){
     allTriangles.clear();
+    activeTriangles.clear(); 
     layers.clear();
 }
 void ofxSlicer::intersectionCalc(ofVec3f _target0, ofVec3f _target1, ofVec3f _orig, Layer &currentLayer){
