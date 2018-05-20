@@ -11,7 +11,7 @@ The algorithms behind the slicer is mostly motivated by the work presented in th
 3. Construct contours: Create polygons from the intersection points
 4. Make sence of the polygons (Clockwice/Counterclockwise)
 
-Easy right? Not so much. Turns out that I really have to reassess some fundamental vector math and more or less learn C++ from scratch. Here we go.  
+Easy right? Not so much. Turns out that I really have to reassess some fundamental vector math and more or less learn C++ from scratch.  
 
 ### Getting the triangles 
 
@@ -19,22 +19,17 @@ Getting the triangles was a bit of a struggle in Openframeworks. To import .stl 
 
 ### Calculate the triangle intersections 
 
-Now it´s time to create some contours. We now have to calculate the intersections between the triangles we made and the layer planes. Ive tried to make a visual of the plan here: 
+TODO: post seudo code. 
 
-![triangleInter](img/triangleIntersection.png)
+![triangleInter](docs/img/triangleIntersection.png)
 
 We basically have three diferent situations. 
 1. The triangle is located on the topside of the layer plane 
 2. The triangle is intersecting with the plane. 
 3. The triangle is underneath the plane. This means that the slicer is finished processing it. 
 
-Full disclosure at this point. I found it really hard to calculate the intersections. It turns out to be really easy and basic math, but it took me a while to 
-make it work. 
-The output from the intersecting algorihtm should look like this: 
+![intersections](docs/img/intersections.png)
 
-![intersections](img/intersections.png)
-
-And look at that. It actually works! I had some initial problems with missing points. Turned out that my triangle building function was not working  100%. Should be good now. Next up toolpaths  
 
 TODO: Remove finished triangles. This will speed up the algorithm and save time on more complex geometry. 
 
@@ -42,4 +37,10 @@ TODO: Remove finished triangles. This will speed up the algorithm and save time 
 
 TODO: Build toolpaths. Are you doing .gcode? 
 
+### Threading in C++
+
+### How to use it
+Explain how people can reuse the slicer. 
+
+### How I use it
 ##
