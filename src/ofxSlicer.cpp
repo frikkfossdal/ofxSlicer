@@ -185,7 +185,8 @@ public:
 };
 void ofxSlicer::createContours(Layer &currentLayer){
     //create the an initial hash table
-    map<vec2key, ofVec3f*> hash;
+    typedef pair<ofVec3f, ofVec3f> vec_pair;
+    map<vec2key, vec_pair> hash;
     
     for(auto s = currentLayer.segments.begin(); s != currentLayer.segments.end(); s++){
         ofPolyline q = *s;
@@ -193,24 +194,21 @@ void ofxSlicer::createContours(Layer &currentLayer){
         if(q[0].distance(q[1]) > 0.001){
             ofVec3f comb1 [] = {q[1], ofVec3f(0)};
             ofVec3f comb2 [] = {q[0], ofVec3f(0)};
-            hash[vec2key(q[0].x,q[0].y,q[0].z)] = comb1;
-            hash[vec2key(q[1].x,q[1].y,q[1].z)] = comb2;
+            hash[vec2key(q[0].x,q[0].y,q[0].z)] = make_pair(q[1], ofVec3f(0));
+            hash[vec2key(q[1].x,q[1].y,q[1].z)] = make_pair(q[0], ofVec3f(0));
         }
     }
     //loop trough hash table and add belonging segment-neighboor-point-ish
     for(auto h = hash.begin(); h != hash.end(); h++){
         //find key for belonging value
-        auto it = hash.find(vec2key(h->second[0].x,h->second[0].y, h->second[0].z));
+        auto it = hash.find(vec2key(h->second.first.x,h->second.first.y, h->second.first.z));
         if(it != hash.end()){
-            it->second[1] = ofVec3f(2,1,2);
-            std::cout << it->second[1] << endl;
-            
+            //object located
+            it->second.second.set(h->first.x, h->first.y, h->first.z);
         }
         else{
             std::cout << "fix this according to the paper. Value needs to be added to hash" << endl;
         }
-
-
     }
 }
 // ---------------------THREADING-------------------------
