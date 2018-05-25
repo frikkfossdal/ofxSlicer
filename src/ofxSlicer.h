@@ -44,6 +44,7 @@ private:
     void findIntersectionPoints(std::vector<Layer> _layers);
     void findJobs(std::vector<Layer> _layers);
     void intersectionCalc(ofVec3f _target0, ofVec3f _target1, ofVec3f _orig, Layer &currentLayer);
+    void createContours(Layer &currentLayer);
 };
 //TODO:
 //1. Add segments

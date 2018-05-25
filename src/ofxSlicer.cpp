@@ -119,6 +119,8 @@ void ofxSlicer::findIntersectionPoints(std::vector<Layer> _layers){
                 t++;
             }
         }
+        //IntersectionPoints on layer found. Next calculate contours and make them polygons
+        createContours(layers[l]);
     }
 }
 void ofxSlicer::findPerim(){
@@ -152,13 +154,65 @@ void ofxSlicer::intersectionCalc(ofVec3f _target0, ofVec3f _target1, ofVec3f _or
     float y1 =_target1.y+vec1.y*t1;
     
     
-    ofVec3f interPoint0 = ofVec3f(x0,y0,layerHeight);
-    ofVec3f interPoint1 = ofVec3f(x1,y1, layerHeight);
+    ofVec3f interPoint0 = ofVec3f(x0,y0,currentLayer.layerHeight);
+    ofVec3f interPoint1 = ofVec3f(x1,y1, currentLayer.layerHeight);
     
     currentLayer.intersectionpoints.push_back(interPoint0);
     currentLayer.intersectionpoints.push_back(interPoint1);
+    
+    //create line segment
+    ofPolyline line;
+    line.begin();
+    line.addVertex(interPoint0.x, interPoint0.y, currentLayer.layerHeight);
+    line.addVertex(interPoint1.x, interPoint1.y, currentLayer.layerHeight);
+    line.end();
+    currentLayer.segments.push_back(line);
 }
+class vec2key{
+public:
+    float x,y,z;
+    vec2key(float xValue, float yValue, float zValue){
+        x = xValue;
+        y = yValue;
+        z = zValue;
+    }
+    bool operator < (const vec2key& other) const{
+        if( x == other.x){
+            return y < other.y;
+        }
+        return x < other.x;
+    }
+};
+void ofxSlicer::createContours(Layer &currentLayer){
+    //create the an initial hash table
+    map<vec2key, ofVec3f*> hash;
+    
+    for(auto s = currentLayer.segments.begin(); s != currentLayer.segments.end(); s++){
+        ofPolyline q = *s;
+    
+        if(q[0].distance(q[1]) > 0.001){
+            ofVec3f comb1 [] = {q[1], ofVec3f(0)};
+            ofVec3f comb2 [] = {q[0], ofVec3f(0)};
+            hash[vec2key(q[0].x,q[0].y,q[0].z)] = comb1;
+            hash[vec2key(q[1].x,q[1].y,q[1].z)] = comb2;
+        }
+    }
+    //loop trough hash table and add belonging segment-neighboor-point-ish
+    for(auto h = hash.begin(); h != hash.end(); h++){
+        //find key for belonging value
+        auto it = hash.find(vec2key(h->second[0].x,h->second[0].y, h->second[0].z));
+        if(it != hash.end()){
+            it->second[1] = ofVec3f(2,1,2);
+            std::cout << it->second[1] << endl;
+            
+        }
+        else{
+            std::cout << "fix this according to the paper. Value needs to be added to hash" << endl;
+        }
 
+
+    }
+}
 // ---------------------THREADING-------------------------
 void ofxSlicer::startSlice(){
     startThread();
@@ -173,14 +227,15 @@ void ofxSlicer::threadedFunction(){
     {
         sliceFinished = false;
         std:: cout << "i am a thread and i am running" << endl;
+        
+        //Do slicing and put information into each layer
         cleanSlicer(); 
         buildTriangles();
         createLayers();
         findIntersectionPoints(layers);
-        //createJobs()
-        //for each layer, create segments and jobs. Should this be handled directly by ofxSlicer (instead of layer)
         stopSlice();
         sliceFinished = true;
-        std::cout << "sliced!" << endl; 
+        std::cout << "sliced!" << endl;
+        //Run slicer animation and update relevant GUI.
     }
 }

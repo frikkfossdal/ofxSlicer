@@ -23,5 +23,6 @@ void Layer::show(){
         ofDrawEllipse(it->x, it->y, it->z, .1, .1);
     }
 }
+
 //Not in use yet. Implement later to increase calculation speed
 
