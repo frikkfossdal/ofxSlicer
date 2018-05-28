@@ -191,6 +191,9 @@ void ofxSlicer::createContours(Layer &currentLayer){
     for(auto s = currentLayer.segments.begin(); s != currentLayer.segments.end(); s++){
         ofPolyline q = *s;
     
+        
+    //I think this is wrong. There is not enough information
+    //Fix insertion. Needs to push, not "create"
         if(q[0].distance(q[1]) > 0.001){
             ofVec3f comb1 [] = {q[1], ofVec3f(0)};
             ofVec3f comb2 [] = {q[0], ofVec3f(0)};
@@ -200,23 +203,16 @@ void ofxSlicer::createContours(Layer &currentLayer){
     }
     //loop trough hash table and add belonging segment-neighboor-point-ish
     for(auto h = hash.begin(); h != hash.end(); h++){
-        //find key for belonging value
-        auto it = hash.find(vec2key(h->second.first.x,h->second.first.y, h->second.first.z));
+        map<vec2key, vec_pair>::iterator it = hash.find(vec2key(h->second.first.x,h->second.first.y, h->second.first.z));
         if(it != hash.end()){
-            //object located
-<<<<<<< HEAD
-            //set value on hash object. Currently not working 
-            it->second.second.set(h->first.x, h->first.y, h->first.z);
-=======
-            //you need a way to set it´s value
-            it->second.second.operator=(ofVec3f(h->first.x, h->first.y, h->first.z));
->>>>>>> 52b54b40dd2b2eaa22d62c4f98708d55a10801f8
+            (*h).second.second=ofVec3f(it->second.first.x, it->second.first.y, it->second.first.z);
         }
         else{
             std::cout << "fix this according to the paper. Value needs to be added to hash" << endl;
         }
     }
 }
+
 // ---------------------THREADING-------------------------
 void ofxSlicer::startSlice(){
     startThread();
