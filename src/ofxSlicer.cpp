@@ -204,7 +204,8 @@ void ofxSlicer::createContours(Layer &currentLayer){
         auto it = hash.find(vec2key(h->second.first.x,h->second.first.y, h->second.first.z));
         if(it != hash.end()){
             //object located
-            it->second.second.set(h->first.x, h->first.y, h->first.z);
+            //you need a way to set it´s value
+            it->second.second.operator=(ofVec3f(h->first.x, h->first.y, h->first.z));
         }
         else{
             std::cout << "fix this according to the paper. Value needs to be added to hash" << endl;
