@@ -185,32 +185,61 @@ public:
 };
 void ofxSlicer::createContours(Layer &currentLayer){
     //create the an initial hash table
+    //    typedef std::multimap<char, int>::iterator MMAPIterator;
     typedef pair<ofVec3f, ofVec3f> vec_pair;
     map<vec2key, vec_pair> hash;
     
     for(auto s = currentLayer.segments.begin(); s != currentLayer.segments.end(); s++){
+        //fill the hash table with segments and one blank space seg(u,v) -> hash(key = u, value {v, *} and  hash(key = v, value {u, *}
         ofPolyline q = *s;
-    
-        
-    //I think this is wrong. There is not enough information
-    //Fix insertion. Needs to push, not "create"
         if(q[0].distance(q[1]) > 0.001){
             ofVec3f comb1 [] = {q[1], ofVec3f(0)};
             ofVec3f comb2 [] = {q[0], ofVec3f(0)};
-            hash[vec2key(q[0].x,q[0].y,q[0].z)] = make_pair(q[1], ofVec3f(0));
-            hash[vec2key(q[1].x,q[1].y,q[1].z)] = make_pair(q[0], ofVec3f(0));
+            //check if the entry exists for each point.
+            auto search1 = hash.find(vec2key(q[0].x, q[0].y, q[0].z));
+            auto search2 = hash.find(vec2key(q[1].x, q[1].y, q[1].z));
+            ofVec3f somevector = ofVec3f(2,1,2);
+
+            if(search1 != hash.end()){
+                
+            }
+            if(search2 != hash.end()){
+                
+            }
+            
+            hash.insert(make_pair(vec2key(q[0].x,q[0].y,q[0].z), make_pair(q[1], ofVec3f(0))));
+            hash.insert(make_pair(vec2key(q[1].x,q[1].y,q[1].z), make_pair(q[0], ofVec3f(0))));
+            
         }
     }
+    //search for a key
+//    for(auto h = hash.begin(); h != hash.end(); h++){
+//        //loop trough all items in hash.
+//        //search for current hash. There should e two items with the same key.
+//        auto search = hash.find(vec2key(h->first.x,h->first.y, h->first.z));
+//        pair<MMAPIterator, MMAPIterator> result = hash.equal_range(vec2key(h->first.x,h->first.y, h->first.z));
+//        for(MMAPIterator it = result.first; it !=result.second; it++){
+//            std::cout << it->second.first;
+//        }
+//    }
+    
+//    for (const auto& something : hash){
+//        std::cout << "found: " <<  something.first.x << " " << something.first.y;
+//        std::cout << "    with second value: " << something.second.first << endl;
+//    }
     //loop trough hash table and add belonging segment-neighboor-point-ish
-    for(auto h = hash.begin(); h != hash.end(); h++){
-        map<vec2key, vec_pair>::iterator it = hash.find(vec2key(h->second.first.x,h->second.first.y, h->second.first.z));
-        if(it != hash.end()){
-            (*h).second.second=ofVec3f(it->second.first.x, it->second.first.y, it->second.first.z);
-        }
-        else{
-            std::cout << "fix this according to the paper. Value needs to be added to hash" << endl;
-        }
-    }
+//    for(auto h = hash.begin(); h != hash.end(); h++){
+//        std::cout << "looking for " << h->first.x << " " << h->first.y << endl;
+//        map<vec2key, vec_pair>::iterator it = hash.find(vec2key(h->first.x,h->first.y, h->first.z));
+//        if(it != hash.end()){
+//            std::cout << "found one: " << it->first.x << " " << it->first.y << endl;
+//
+//            //(*h).second.second=ofVec3f(it->second.first.x, it->second.first.y, it->second.first.z);
+//        }
+//        else{
+//            std::cout << "fix this according to the paper. Value needs to be added to hash" << endl;
+//        }
+//    }
 }
 
 // ---------------------THREADING-------------------------
