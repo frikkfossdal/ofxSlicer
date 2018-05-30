@@ -168,21 +168,6 @@ void ofxSlicer::intersectionCalc(ofVec3f _target0, ofVec3f _target1, ofVec3f _or
     line.end();
     currentLayer.segments.push_back(line);
 }
-class vec2key{
-public:
-    float x,y,z;
-    vec2key(float xValue, float yValue, float zValue){
-        x = xValue;
-        y = yValue;
-        z = zValue;
-    }
-    bool operator < (const vec2key& other) const{
-        if( x == other.x){
-            return y < other.y;
-        }
-        return x < other.x;
-    }
-};
 void ofxSlicer::createContours(Layer &currentLayer){
     //create the an initial hash table
     //    typedef std::multimap<char, int>::iterator MMAPIterator;
@@ -192,13 +177,18 @@ void ofxSlicer::createContours(Layer &currentLayer){
     for(auto s = currentLayer.segments.begin(); s != currentLayer.segments.end(); s++){
         //fill the hash table with segments and one blank space seg(u,v) -> hash(key = u, value {v, *} and  hash(key = v, value {u, *}
         ofPolyline q = *s;
+        insertHash(hash, *s);
+        
+        
+        
         if(q[0].distance(q[1]) > 0.001){
             ofVec3f comb1 [] = {q[1], ofVec3f(0)};
             ofVec3f comb2 [] = {q[0], ofVec3f(0)};
             //check if the entry exists for each point.
             auto search1 = hash.find(vec2key(q[0].x, q[0].y, q[0].z));
             auto search2 = hash.find(vec2key(q[1].x, q[1].y, q[1].z));
-            ofVec3f somevector = ofVec3f(2,1,2);
+            
+           
 
             if(search1 != hash.end()){
                 
@@ -240,6 +230,10 @@ void ofxSlicer::createContours(Layer &currentLayer){
 //            std::cout << "fix this according to the paper. Value needs to be added to hash" << endl;
 //        }
 //    }
+}
+void ofxSlicer::insertHash(map<vec2key,pair<ofVec3f, ofVec3f>> _hash, ofPolyline _seg){
+    //map<vec2key, pair<ofVec3f, ofVec3f>>::iterator it = _hash.find(_seg[0]);
+    //write some nonsence heret 
 }
 
 // ---------------------THREADING-------------------------

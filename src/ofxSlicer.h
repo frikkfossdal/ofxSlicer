@@ -8,6 +8,7 @@
 #include "Layer.hpp"
 #include "Triangles.hpp"
 #include "ofxAssimpModelLoader.h"
+#include "vec2key.hpp"
 
 class ofxSlicer : public ofThread{
 public:
@@ -45,6 +46,7 @@ private:
     void findJobs(std::vector<Layer> _layers);
     void intersectionCalc(ofVec3f _target0, ofVec3f _target1, ofVec3f _orig, Layer &currentLayer);
     void createContours(Layer &currentLayer);
+    void insertHash(map<vec2key,pair<ofVec3f, ofVec3f>> _hash, ofPolyline _seg);
 
     
 };
