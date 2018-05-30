@@ -186,9 +186,7 @@ void ofxSlicer::createContours(Layer &currentLayer){
     std::cout << "constructing contours..." << endl;
     //loop trough hash and build contours
     while(!hash.empty()){
-        ofPolyline line;
-        ofPolyline line2;
-        line.addVertex(line2[0]);
+
         //startLoop(map<vec2key, vec_pair> &_hash)
         //extendLoop(ofPolyline _contour, map<vec2key,vec_pair> &_hash)
         //1. start with random point (set this as intital point
@@ -218,6 +216,11 @@ ofVec3f ofxSlicer::startLoop(map<vec2key, pair<ofVec3f, ofVec3f> > &_hash){
     std::vector<ofVec3f> uw = {(*it).second.first, (*it).second.second};
     ofVec3f v = uw[0];
     return P;
+}
+void ofxSlicer::addToLoop(ofPolyline &_line, map<vec2key, pair<ofVec3f, ofVec3f> > &_hash){
+    ofVec3f current;
+    ofVec3f first;
+    
 }
 
 

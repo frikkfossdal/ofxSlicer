@@ -48,6 +48,7 @@ private:
     void createContours(Layer &currentLayer);
     void insertHash(map<vec2key,pair<ofVec3f, ofVec3f>> &_hash, ofVec3f v, ofVec3f u);
     ofVec3f startLoop(map<vec2key, pair<ofVec3f, ofVec3f>> &_hash);
+    void addToLoop(ofPolyline &_line, map<vec2key, pair<ofVec3f, ofVec3f>> &_hash);
 
     
 };
