@@ -46,7 +46,8 @@ private:
     void findJobs(std::vector<Layer> _layers);
     void intersectionCalc(ofVec3f _target0, ofVec3f _target1, ofVec3f _orig, Layer &currentLayer);
     void createContours(Layer &currentLayer);
-    void insertHash(map<vec2key,pair<ofVec3f, ofVec3f>> _hash, ofPolyline _seg);
+    void insertHash(map<vec2key,pair<ofVec3f, ofVec3f>> &_hash, ofVec3f v, ofVec3f u);
+    ofVec3f startLoop(map<vec2key, pair<ofVec3f, ofVec3f>> &_hash);
 
     
 };

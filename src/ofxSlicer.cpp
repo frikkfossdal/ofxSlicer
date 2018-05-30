@@ -177,64 +177,49 @@ void ofxSlicer::createContours(Layer &currentLayer){
     for(auto s = currentLayer.segments.begin(); s != currentLayer.segments.end(); s++){
         //fill the hash table with segments and one blank space seg(u,v) -> hash(key = u, value {v, *} and  hash(key = v, value {u, *}
         ofPolyline q = *s;
-        insertHash(hash, *s);
-        
-        
-        
         if(q[0].distance(q[1]) > 0.001){
-            ofVec3f comb1 [] = {q[1], ofVec3f(0)};
-            ofVec3f comb2 [] = {q[0], ofVec3f(0)};
-            //check if the entry exists for each point.
-            auto search1 = hash.find(vec2key(q[0].x, q[0].y, q[0].z));
-            auto search2 = hash.find(vec2key(q[1].x, q[1].y, q[1].z));
-            
-           
-
-            if(search1 != hash.end()){
-                
-            }
-            if(search2 != hash.end()){
-                
-            }
-            
-            hash.insert(make_pair(vec2key(q[0].x,q[0].y,q[0].z), make_pair(q[1], ofVec3f(0))));
-            hash.insert(make_pair(vec2key(q[1].x,q[1].y,q[1].z), make_pair(q[0], ofVec3f(0))));
-            
+            insertHash(hash, q[0], q[1]);
+            insertHash(hash, q[1], q[0]);
         }
     }
-    //search for a key
-//    for(auto h = hash.begin(); h != hash.end(); h++){
-//        //loop trough all items in hash.
-//        //search for current hash. There should e two items with the same key.
-//        auto search = hash.find(vec2key(h->first.x,h->first.y, h->first.z));
-//        pair<MMAPIterator, MMAPIterator> result = hash.equal_range(vec2key(h->first.x,h->first.y, h->first.z));
-//        for(MMAPIterator it = result.first; it !=result.second; it++){
-//            std::cout << it->second.first;
-//        }
-//    }
-    
-//    for (const auto& something : hash){
-//        std::cout << "found: " <<  something.first.x << " " << something.first.y;
-//        std::cout << "    with second value: " << something.second.first << endl;
-//    }
-    //loop trough hash table and add belonging segment-neighboor-point-ish
-//    for(auto h = hash.begin(); h != hash.end(); h++){
-//        std::cout << "looking for " << h->first.x << " " << h->first.y << endl;
-//        map<vec2key, vec_pair>::iterator it = hash.find(vec2key(h->first.x,h->first.y, h->first.z));
-//        if(it != hash.end()){
-//            std::cout << "found one: " << it->first.x << " " << it->first.y << endl;
-//
-//            //(*h).second.second=ofVec3f(it->second.first.x, it->second.first.y, it->second.first.z);
-//        }
-//        else{
-//            std::cout << "fix this according to the paper. Value needs to be added to hash" << endl;
-//        }
-//    }
+    std::cout << "initial hash built... " << endl;
+    std::cout << "constructing contours..." << endl;
+    //loop trough hash and build contours
+    while(!hash.empty()){
+        ofPolyline line;
+        ofPolyline line2;
+        line.addVertex(line2[0]);
+        //startLoop(map<vec2key, vec_pair> &_hash)
+        //extendLoop(ofPolyline _contour, map<vec2key,vec_pair> &_hash)
+        //1. start with random point (set this as intital point
+        //2. search for neighboor point add it to line.
+        //3. if point == initial point, contour is closed.
+        //4. remove from hash till complete
+        hash.cbegin();
+    }
 }
-void ofxSlicer::insertHash(map<vec2key,pair<ofVec3f, ofVec3f>> _hash, ofPolyline _seg){
-    //map<vec2key, pair<ofVec3f, ofVec3f>>::iterator it = _hash.find(_seg[0]);
-    //write some nonsence heret 
+void ofxSlicer::insertHash(map<vec2key,pair<ofVec3f, ofVec3f>> &_hash, ofVec3f u, ofVec3f v){
+    auto search = _hash.find(vec2key(u.x, u.y,u.z));
+    if(search == _hash.end()){
+        //key does not exist. Make it
+        _hash.insert(make_pair(vec2key(u.x,u.y,u.z), make_pair(v, ofVec3f(0))));
+    }
+    else{
+        //key exist. Modify it with new value
+        //_hash.insert(make_pair(vec2key(v.x,v.y,v.z), make_pair(u, ofVec3f(0))));
+        (*search).second.second = v;
+    }
 }
+ofVec3f ofxSlicer::startLoop(map<vec2key, pair<ofVec3f, ofVec3f> > &_hash){
+    ofVec3f P;
+    //create first point
+    auto it = _hash.begin();
+    ofVec3f u = ofVec3f((*it).first.x,(*it).first.y, (*it).first.z);
+    std::vector<ofVec3f> uw = {(*it).second.first, (*it).second.second};
+    ofVec3f v = uw[0];
+    return P;
+}
+
 
 // ---------------------THREADING-------------------------
 void ofxSlicer::startSlice(){
