@@ -182,18 +182,19 @@ void ofxSlicer::createContours(Layer &currentLayer){
             insertHash(hash, q[1], q[0]);
         }
     }
-    std::cout << "initial hash built... " << endl;
-    std::cout << "constructing contours..." << endl;
     //loop trough hash and build contours
     while(!hash.empty()){
-
-        //startLoop(map<vec2key, vec_pair> &_hash)
-        //extendLoop(ofPolyline _contour, map<vec2key,vec_pair> &_hash)
-        //1. start with random point (set this as intital point
-        //2. search for neighboor point add it to line.
-        //3. if point == initial point, contour is closed.
-        //4. remove from hash till complete
-        hash.cbegin();
+        std::vector<ofVec3f> currentContour = startLoop(hash);
+        //stay in addToLoop till contour is finishes or breaks
+        addToLoop(currentContour, hash);
+        //prototype create contour
+        ofPolyline contour;
+        contour.begin();
+        for(int i = 0; i < currentContour.size(); i++){
+            contour.addVertex(currentContour[i]);
+        }
+        contour.end();
+        currentLayer.contours.push_back(contour);
     }
 }
 void ofxSlicer::insertHash(map<vec2key,pair<ofVec3f, ofVec3f>> &_hash, ofVec3f u, ofVec3f v){
@@ -208,19 +209,46 @@ void ofxSlicer::insertHash(map<vec2key,pair<ofVec3f, ofVec3f>> &_hash, ofVec3f u
         (*search).second.second = v;
     }
 }
-ofVec3f ofxSlicer::startLoop(map<vec2key, pair<ofVec3f, ofVec3f> > &_hash){
-    ofVec3f P;
+std::vector<ofVec3f> ofxSlicer::startLoop(map<vec2key, pair<ofVec3f, ofVec3f> > &_hash){
+    std::vector<ofVec3f> P;
     //create first point
     auto it = _hash.begin();
     ofVec3f u = ofVec3f((*it).first.x,(*it).first.y, (*it).first.z);
     std::vector<ofVec3f> uw = {(*it).second.first, (*it).second.second};
     ofVec3f v = uw[0];
+    P.push_back(u);
+    P.push_back(v);
+    _hash.erase(vec2key(u.x,u.y,u.z));
     return P;
 }
-void ofxSlicer::addToLoop(ofPolyline &_line, map<vec2key, pair<ofVec3f, ofVec3f> > &_hash){
-    ofVec3f current;
-    ofVec3f first;
-    
+void ofxSlicer::addToLoop(std::vector<ofVec3f> &_contour, map<vec2key, pair<ofVec3f, ofVec3f> > &_hash){
+    ofVec3f current = _contour.back();
+    ofVec3f first = _contour.front();
+    ofVec3f last;
+    //find next vertices
+    while(true){
+        auto it = _hash.find(vec2key(current.x,current.y,current.z));
+        if(it == _hash.end()){
+            //dead end. Break loop
+            break;
+            std::cout << "fuckup!" << endl;
+        }
+        ofVec3f key1 = ofVec3f(it->first.x, it->first.y, it->first.z);
+        //get next unused neighboor of current
+        std::vector<ofVec3f> vw = {(*it).second.first, (*it).second.second};
+        ofVec3f next = vw.at(0); //first unused neighbor of current
+        _contour.push_back(next);
+        
+        //remove the used segment from hash.
+        //continue to next segment
+        _hash.erase(vec2key(current.x, current.y, current.z));
+        if(next == first){
+            //contour closed.
+            break;
+        }
+        
+        current = next;
+    }
 }
 
 

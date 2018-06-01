@@ -13,7 +13,7 @@ Layer::Layer(float _layerHeight){
     layerHeight = _layerHeight;
 }
 void Layer::show(){
-    for(auto it = segments.begin(); it !=segments.end(); it++){
+    for(auto it = contours.begin(); it !=contours.end(); it++){
         ofSetColor(200);
         it->draw();
     }
