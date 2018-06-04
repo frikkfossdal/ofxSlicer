@@ -251,7 +251,6 @@ void ofxSlicer::addToLoop(std::vector<ofVec3f> &_contour, map<vec2key, pair<ofVe
     }
 }
 
-
 // ---------------------THREADING-------------------------
 void ofxSlicer::startSlice(){
     startThread();
@@ -266,7 +265,6 @@ void ofxSlicer::threadedFunction(){
     {
         sliceFinished = false;
         std:: cout << "i am a thread and i am running" << endl;
-        
         //Do slicing and put information into each layer
         cleanSlicer(); 
         buildTriangles();
