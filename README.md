@@ -12,28 +12,32 @@ If you want to learn more about the project and the movitation behind it, I´ve 
 
 ![philosophy](docs/img/philosophy.png)
 
+### Structure
+
+Stucturing of the information is key when working with the amount of data that a high-dense .stl-file will give you. The ofxSlicer mainly structures the data into objects of the Layer-class. The contours located by the slicing-algorithm is distributed into the Layer-class´s  sub-class Jobs. I realize that this get´s more and more messier as I write about it, so look to the figure below to get a general idea of the structure. 
+
+TODO: Add figure of class-structure.
+
 ## The Slicer
 
-The algorithms behind the slicer is mostly motivated by the work presented in this [paper.](http://www.dainf.ct.utfpr.edu.br/%7Emurilo/public/CAD-slicing.pdf) In the paper, the authors claims that they have developed a slicing algorithm that is time-wise optimal compared to other slicing algorithms known in litterature. The authors has also published their C++ code 
+The algorithms behind the slicer is mostly motivated by the work presented in this [paper.](http://www.dainf.ct.utfpr.edu.br/%7Emurilo/public/CAD-slicing.pdf) In the paper, the authors claims that they have developed a slicing algorithm that is time-wise optimal compared to other slicing algorithms known in litterature. The authors has also published their source-code code [here.](http://www.dainf.ct.utfpr.edu.br/~rminetto/projects/slicing/) 
 
 The slicing algorithm goes something like this:
 
 1. Create a list containing all triangles of the mesh model.
 2. Mesh slicing:  Calculate triangle intersection points on each plane.
-3. Construct contours: Create polygons from the intersection points
+3. Construct contours: Create polygons from the intersection points for each plane.
 4. Make sence of the polygons (Clockwice/Counterclockwise)
 
 Full disclaimer. I´m new to C++, and by no means an expert in programming. I wanted to keep close track on how the memory is used and allocated by the slicer. Based on this I decided that C++ would be an optimal choise of language.  I´m also having a really alright time with Openframeworks. 
 
 ### Getting the triangles 
 
-Getting the triangles was a bit of a struggle in Openframeworks. To import .stl files, I use the [ofxAssimpModelLoader](http://openframeworks.cc/documentation/ofxAssimpModelLoader/ofxAssimpModelLoader/) addon in openframeworks.  It took some tweaking to get the triangle faces, with it´s belonging vertices, extracted from the assimp class. All the triangles are sorted in ascending order in terms of the lowest point in the triangle. I´ve commented this in the code. NOTE: It would probaly be easier to use some kind of existing C++ framework for geometry like CGAL, but not as much fun! 
+Getting the triangles was a bit of a struggle in Openframeworks. To import .stl files, I use the [ofxAssimpModelLoader](http://openframeworks.cc/documentation/ofxAssimpModelLoader/ofxAssimpModelLoader/) addon in openframeworks.  It took some tweaking to get the triangle faces, with it´s belonging vertices extracted from the assimp class. All the triangles are sorted in ascending order in terms of the lowest point in the triangle. I´ve commented this in the code. NOTE: It would probaly be easier to use some kind of existing C++ framework for geometry like CGAL, but not as much fun! 
 
 ### Calculate the triangle intersections 
 
 Once we have the triangles it´s time to calculate the intersection points on each layer. 
-
-TODO: post seudo code. 
 
 ![triangleInter](docs/img/triangleIntersection.png)
 
@@ -41,6 +45,8 @@ I basically have three diferent situations.
 1. The triangle is located on the topside of the layer plane 
 2. The triangle is intersecting with the plane. 
 3. The triangle is underneath the plane. This means that the slicer is finished processing it. 
+
+TODO: post seudo code. 
 
 ![intersections](docs/img/intersections.png)
 
@@ -52,13 +58,20 @@ TODO. Add figure
 
 ### Creating the toolpaths
 
-Once the triangle intersection algorithm has swept trough all of the triangles I basically have a bunch of layers containing intersection points. From this, I want to create a set of polygons that essentially is my toolpaths. To find the polygons, the paper suggest to create a [hash table](https://en.wikipedia.org/wiki/Hash_table). 
+Once the triangle intersection algorithm has swept trough all of the triangles I basically have a bunch of layers containing intersection points relevant to that layer. From this, I want to create a set of polygons that essentially is my toolpaths. To find the polygons, the paper suggest to create a [hash table](https://en.wikipedia.org/wiki/Hash_table). Basically this means that they build a indexed table of all points in the layer,  where the point itself is used as the index key, and it´s neighboor points is it the key´s belonging values.  I´ve tried to illustrate this in the figure below.
 
+TODO: Insert figure here. 
+
+If you want to really dive into how this thing works, I suggest that you go study the original paper.  The philosophy behind the hash-table is thoroughly descibed there. 
+
+Allright. Now I´m starting to feel good about this. I have my own slicer that generates layer by layer contours from an stl model. 
 
 ### Threading in C++
 
 ### How you can use it
-Explain how people can reuse the slicer. 
-
+Reusing the slicer in your Openframeworks project should be pretty straightforward. 
+* clone the git into your local addons folder
+* use the Openframeworks projectGenerator to include the ofxSlicer in your project 
+* create an ofxSlicer object, feed it an stl and start slicing. Do a debug if your want to study how the data is structured. 
 
 ##
