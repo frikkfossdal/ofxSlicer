@@ -37,9 +37,9 @@ Getting the triangles was a bit of a struggle in Openframeworks. To import .stl 
 
 ### Calculate the triangle intersections 
 
-Once we have the triangles it´s time to calculate the intersection points on each layer. 
+Once we have the triangles it´s time to calculate the intersection points on each layer. Have a look at this figure. 
 
-![triangleInter](docs/img/triangleIntersection.png)
+![triangleInter](docs/img/triangle_slicing-01.png)
 
 I basically have three diferent situations. 
 1. The triangle is located on the topside of the layer plane 
@@ -53,6 +53,8 @@ TODO: post seudo code.
 ### Active triangles 
 
 To improve the speed of the algorithm the triangles that are finished processed are removed from the triangle list that is used in the calculation. This condition applies when the entire triangle is located underneath the layer plane. See figure. 
+
+![active triangles](docs/img/triangle_slicing-02.png)
 
 TODO. Add figure 
 
