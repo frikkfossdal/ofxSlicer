@@ -20,6 +20,8 @@ public:
     void loadFile(string _pathToFile);
     void showAssimpModel();
     void showSegments(int _layer);
+    void showIntersections(int _layer);
+    void showTriangles();
     void cleanSlicer(); 
     void startSlice();
     void stopSlice();

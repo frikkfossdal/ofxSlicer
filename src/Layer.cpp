@@ -17,6 +17,9 @@ void Layer::show(){
         ofSetColor(200);
         it->draw();
     }
+
+}
+void Layer::showIntersections(){
     for(auto it = intersectionpoints.begin(); it!=intersectionpoints.end(); it++)
     {
         ofSetColor(255, 0, 0);

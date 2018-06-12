@@ -27,6 +27,7 @@ public:
 
     //Method
     void show();
+    void showIntersections(); 
     
 private:
 

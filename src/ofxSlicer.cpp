@@ -70,59 +70,20 @@ void ofxSlicer::createLayers(){
     }
 }
 void ofxSlicer::findIntersectionPoints(std::vector<Layer> _layers){
-    activeTriangles = allTriangles;
-    
     for(int l = 0; l < layers.size(); l++){
-        for(auto t = activeTriangles.begin(); t != activeTriangles.end();){
-            //remove non-active triangles
-            if(t->zMin > layers[l].layerHeight){
-                t = activeTriangles.erase(t);
+        //add relevant triangles to active triangle vector
+        for(int t = 0; t < allTriangles.size();){
+            if(allTriangles[t].zMin < layers[l].layerHeight)
+            {
+                activeTriangles.push_back(allTriangles[t]);
             }
-            //calculate intersectionPoints for layer
-            else{
-                std::vector<ofVec3f> topSide;
-                std::vector<ofVec3f> bottomSide;
-                std::vector<ofVec3f> onPlane;
-                
-                //loop trough all points in a triangle object
-                for(auto p = t->points.begin(); p != t->points.end(); p++){
-                    if(p->z > layerHeight){
-                        //point is located over plane
-                        topSide.push_back(ofVec3f(p->x, p->y, p->z));
-                    }
-                    else if(p->z < layerHeight){
-                        //point is located under plane
-                        bottomSide.push_back(ofVec3f(p->x, p->y, p->z));
-                    }
-                    else{
-                        //point is located on plane
-                        onPlane.push_back(ofVec3f(p->x, p->y, p->z));
-                    }
-                }
-                //use the points to calculate intersectionPoints
-                if(topSide.size() > 1){
-                    //Two points on topside.
-                    if(bottomSide.size() > 0){
-                        intersectionCalc(topSide[0], topSide[1], bottomSide[0], layers[l]);
-                    }
-                }
-                else if(bottomSide.size() > 1){
-                    //Two points on bottomside
-                    if(topSide.size() > 0){
-                        intersectionCalc(bottomSide[0], bottomSide[1], topSide[0], layers[l]);
-                    }
-                }
-                else{
-                    //This would be the case where there are points that are coincident with
-                    //the layer plane. Ignore for now.
-                }
-                t++;
-            }
+            if(allTriangles[t].zMax < layers[l].layerHeight){}
         }
-        //IntersectionPoints on layer found. Next calculate contours and make them polygons
-        createContours(layers[l]);
+        //1. calculate intersection points for current layer
+        //2. calculate contours using  intersection points
     }
 }
+
 void ofxSlicer::findPerim(){
     Triangles lastTriangle = allTriangles.back();
     Triangles firstTriangle = allTriangles.front();
@@ -133,9 +94,20 @@ void ofxSlicer::showAssimpModel(){
     ofSetColor(255, 15);
     model.drawWireframe();
 }
+void ofxSlicer::showIntersections(int _layer){
+    layers[_layer].showIntersections();
+}
+
 void ofxSlicer::showSegments(int _layer){
     layers[_layer].show(); 
     //draw all segments for each layer
+}
+void ofxSlicer::showTriangles(){
+    for(auto it = allTriangles.begin(); it != allTriangles.end(); it++)
+    {
+        ofSetColor(255, 0, 0, 15);
+        ofDrawTriangle(it->points[0].x, it->points[0].y, it->points[0].z, it->points[1].x, it->points[1].y, it->points[1].z, it->points[2].x, it->points[2].y, it->points[2].z);
+    }
 }
 void ofxSlicer::cleanSlicer(){
     allTriangles.clear();
@@ -152,7 +124,6 @@ void ofxSlicer::intersectionCalc(ofVec3f _target0, ofVec3f _target1, ofVec3f _or
     float x1 =_target1.x+vec1.x*t1;
     float y0 =_target0.y+vec0.y*t0;
     float y1 =_target1.y+vec1.y*t1;
-    
     
     ofVec3f interPoint0 = ofVec3f(x0,y0,currentLayer.layerHeight);
     ofVec3f interPoint1 = ofVec3f(x1,y1, currentLayer.layerHeight);
