@@ -7,4 +7,10 @@
 
 #include "Job.hpp"
 Job::Job(){
+    
 }
+//make a time estimate of the job
+void Job::calculateTime(){
+    
+}
+

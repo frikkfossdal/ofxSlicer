@@ -16,11 +16,11 @@ public:
     Job();
     
     //variables
-    std::vector<ofVec3f> points;
-    
+    ofPolyline contour;
+    int timeSec;
     //methods
-private: 
     
+private:
+    void calculateTime();
 };
-
 #endif /* Job_hpp */

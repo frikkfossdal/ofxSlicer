@@ -39,16 +39,15 @@ Getting the triangles was a bit of a struggle in Openframeworks. To import .stl 
 
 Once we have the triangles it´s time to calculate the intersection points on each layer. Have a look at this figure. 
 
+
 ![triangleInter](docs/img/triangle_slicing-01.png)
+
 
 I basically have three diferent situations. 
 1. The triangle is located on the topside of the layer plane 
 2. The triangle is intersecting with the plane. 
 3. The triangle is underneath the plane. This means that the slicer is finished processing it. 
 
-TODO: post seudo code. 
-
-![intersections](docs/img/intersections.png)
 
 ### Active triangles 
 
@@ -56,13 +55,14 @@ To improve the speed of the algorithm the triangles that are finished processed 
 
 ![active triangles](docs/img/triangle_slicing-02.png)
 
-TODO. Add figure 
 
-### Creating the toolpaths
+### Creating the toolpaths // Contour Construction 
 
 Once the triangle intersection algorithm has swept trough all of the triangles I basically have a bunch of layers containing intersection points relevant to that layer. From this, I want to create a set of polygons that essentially is my toolpaths. To find the polygons, the paper suggest to create a [hash table](https://en.wikipedia.org/wiki/Hash_table). Basically this means that they build a indexed table of all points in the layer,  where the point itself is used as the index key, and it´s neighboor points is it the key´s belonging values.  I´ve tried to illustrate this in the figure below.
 
 TODO: Insert figure here. 
+
+Looping trough the hash-table and creating the contours might be the more computational 
 
 If you want to really dive into how this thing works, I suggest that you go study the original paper.  The philosophy behind the hash-table is thoroughly descibed there. 
 

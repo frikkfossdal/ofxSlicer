@@ -20,7 +20,7 @@ void ofxSlicer::loadFile(string _pathToFile){
         hasModel = true;
         
     } catch (exception& e) {
-        std::cout << ("load failed. Check file if file exist at given location.") << endl;
+        std::cout << ("load failed. Check if file exist at given location.") << endl;
         hasModel = false; 
     }
 }
@@ -177,7 +177,7 @@ void ofxSlicer::createContours(Layer &currentLayer){
     for(auto s = currentLayer.segments.begin(); s != currentLayer.segments.end(); s++){
         //fill the hash table with segments and one blank space seg(u,v) -> hash(key = u, value {v, *} and  hash(key = v, value {u, *}
         ofPolyline q = *s;
-        if(q[0].distance(q[1]) > 0.001){
+        if(q[0].distance(q[1]) > 0.1){
             insertHash(hash, q[0], q[1]);
             insertHash(hash, q[1], q[0]);
         }
@@ -246,7 +246,6 @@ void ofxSlicer::addToLoop(std::vector<ofVec3f> &_contour, map<vec2key, pair<ofVe
             //contour closed.
             break;
         }
-        
         current = next;
     }
 }
