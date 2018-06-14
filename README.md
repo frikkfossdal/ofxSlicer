@@ -2,6 +2,8 @@
 
 A slicer for doing parallel processing in additive manufacturing. 
 
+![current](docs/img/currentOverview.png)
+
 ## Some background
 
 As I am currently researching parallel processing in additive manufacturing, I figured that it would be nice to have my own slicer. My motivations for building my own custom one is motivated by both practical needs and a need to really understand how 3-dimentional geometry works in a computer.  
