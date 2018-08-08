@@ -71,14 +71,16 @@ void ofxSlicer::createLayers(){
 }
 void ofxSlicer::findIntersectionPoints(std::vector<Layer> &_layers){
     activeTriangles = allTriangles;
+    //loop trough all layers
     for(int l = 0; l < _layers.size(); l++){
         //add relevant triangles to active triangle vector
         for(auto t = activeTriangles.begin(); t != activeTriangles.end();){
             if(t->zMax < _layers[l].layerHeight){
+                //entire triangle above layerHeight.
                 activeTriangles.erase(t);
             }
             else if(t->zMin > _layers[l].layerHeight){
-                //entire triangle abbove layerHeight
+                //entire triangle below layerHeight.
             }
             else{
                 std::vector<ofVec3f> topSide;
@@ -166,6 +168,10 @@ void ofxSlicer::intersectionCalc(ofVec3f _target0, ofVec3f _target1, ofVec3f _or
     ofVec3f interPoint0 = ofVec3f(x0,y0,currentLayer.layerHeight);
     ofVec3f interPoint1 = ofVec3f(x1,y1, currentLayer.layerHeight);
     
+    //add intersection points to vector
+    currentLayer.intersectionpoints.push_back(interPoint0);
+    currentLayer.intersectionpoints.push_back(interPoint1);
+    
     //create line segment
     ofPolyline line;
     line.begin();
@@ -174,6 +180,8 @@ void ofxSlicer::intersectionCalc(ofVec3f _target0, ofVec3f _target1, ofVec3f _or
     line.end();
     currentLayer.segments.push_back(line);
 }
+
+//Creates contour from intersection points
 void ofxSlicer::createContours(Layer &currentLayer){
     //create the an initial hash table
     //    typedef std::multimap<char, int>::iterator MMAPIterator;
@@ -227,6 +235,7 @@ std::vector<ofVec3f> ofxSlicer::startLoop(map<vec2key, pair<ofVec3f, ofVec3f> > 
     _hash.erase(vec2key(u.x,u.y,u.z));
     return P;
 }
+
 void ofxSlicer::addToLoop(std::vector<ofVec3f> &_contour, map<vec2key, pair<ofVec3f, ofVec3f> > &_hash){
     ofVec3f current = _contour.back();
     ofVec3f first = _contour.front();
@@ -269,11 +278,16 @@ void ofxSlicer::threadedFunction(){
     while(isThreadRunning())
     {
         sliceFinished = false;
+        currentTask = "slicer initiating";
         std:: cout << "i am a thread and i am running" << endl;
         //Do slicing and put information into each layer
-        cleanSlicer(); 
+        currentTask = "cleaning memory";
+        cleanSlicer();
+        currentTask = "building triangles";
         buildTriangles();
+        currentTask = "creating layers";
         createLayers();
+        currentTask = "locating intersection points";
         findIntersectionPoints(layers);
         stopSlice();
         sliceFinished = true;

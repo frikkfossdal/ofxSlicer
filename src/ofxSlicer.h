@@ -34,7 +34,9 @@ public:
     bool sliceFinished;
     bool isActive;
     bool hasModel;
-    bool abortFlag; 
+    bool abortFlag;
+    int currentProcessingLayer;
+    string currentTask; 
     ofxAssimpModelLoader model;
     std::vector<Triangles> allTriangles;
     std::vector<Triangles> activeTriangles;
