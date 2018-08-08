@@ -83,40 +83,8 @@ void ofxSlicer::findIntersectionPoints(std::vector<Layer> &_layers){
                 //entire triangle below layerHeight.
             }
             else{
-                std::vector<ofVec3f> topSide;
-                std::vector<ofVec3f> bottomSide;
-                std::vector<ofVec3f> onPlane;
-                
-                //loop trough all points in triangle
-                //this part seems to be working
-                for(auto p = t->points.begin(); p != t->points.end(); p++){
-                    if(p->z > _layers[l].layerHeight){
-                        topSide.push_back(ofVec3f(p->x, p->y, p->z));
-                    }
-                    else if(p->z < _layers[l].layerHeight){
-                        bottomSide.push_back(ofVec3f(p->x,p->y,p->z));
-                    }
-                    else{
-                        onPlane.push_back(ofVec3f(p->x,p->y,p->z));
-                    }
-                }
-                //this part seems to not be working. Recheck how you calculate intersection points.
-                //#1
-                if(topSide.size() > 1){
-                    if(bottomSide.size() > 0){
-                        intersectionCalc(topSide[0], topSide[1], bottomSide[0], _layers[l]);
-                    }
-                }
-                //#2
-                else if(bottomSide.size() > 1){
-                    if(topSide.size() > 0){
-                        intersectionCalc(bottomSide[0], bottomSide[1], topSide[0], _layers[l]);
-                    }
-                }
-                //#3
-                else{
-                    
-                }
+                //the sweet spot. Calculate intersection points
+                intersectionCalc(t->points[0], t->points[1], t->points[2], layers[l]);
             }
             t++;
         }
@@ -154,31 +122,67 @@ void ofxSlicer::cleanSlicer(){
     activeTriangles.clear(); 
     layers.clear();
 }
-void ofxSlicer::intersectionCalc(ofVec3f _target0, ofVec3f _target1, ofVec3f _orig, Layer &currentLayer){
-    ofVec3f vec0 = _orig.operator-(_target0);
-    ofVec3f vec1 = _orig.operator-(_target1);
+void ofxSlicer::intersectionCalc(ofVec3f &p0, ofVec3f&p1, ofVec3f &p2, Layer &currentLayer){
+    std::vector<ofVec3f> intersectionPoints;
+    //t for P0P1
+    float t0 = (currentLayer.layerHeight - p0.z) / (p1.z-p0.z);
+    //t for P0P2
+    float t1 = (currentLayer.layerHeight - p0.z) / (p2.z-p0.z);
+    //t for P1P2
+    float t2 = (currentLayer.layerHeight - p1.z) / (p2.z-p1.z);
     
-    float t0 = (layerHeight-_target0.z)/vec0.z;
-    float t1 = (layerHeight-_target1.z)/vec1.z;
-    float x0 =_target0.x+vec0.x*t0;
-    float x1 =_target1.x+vec1.x*t1;
-    float y0 =_target0.y+vec0.y*t0;
-    float y1 =_target1.y+vec1.y*t1;
-    
-    ofVec3f interPoint0 = ofVec3f(x0,y0,currentLayer.layerHeight);
-    ofVec3f interPoint1 = ofVec3f(x1,y1, currentLayer.layerHeight);
-    
-    //add intersection points to vector
-    currentLayer.intersectionpoints.push_back(interPoint0);
-    currentLayer.intersectionpoints.push_back(interPoint1);
-    
-    //create line segment
-    ofPolyline line;
-    line.begin();
-    line.addVertex(interPoint0.x, interPoint0.y, currentLayer.layerHeight);
-    line.addVertex(interPoint1.x, interPoint1.y, currentLayer.layerHeight);
-    line.end();
-    currentLayer.segments.push_back(line);
+    //test t values and calculate coordinates for intersection
+    if(t0 < 1 && t0 > 0){
+        float x = p0.x + t0*(p1.x-p0.x);
+        float y = p0.y + t0*(p1.y-p0.y);
+        intersectionPoints.push_back(ofVec3f(x,y,currentLayer.layerHeight));
+        currentLayer.intersectionpoints.push_back(ofVec3f(x,y,currentLayer.layerHeight));
+    }
+    if(t1 < 1 && t1 > 0){
+        float x = p0.x + t1*(p2.x-p0.x);
+        float y = p0.y + t1*(p2.y-p0.y);
+        intersectionPoints.push_back(ofVec3f(x,y,currentLayer.layerHeight));
+        currentLayer.intersectionpoints.push_back(ofVec3f(x,y,currentLayer.layerHeight));
+    }
+    if(t2 < 1 && t2 > 0){
+        float x = p1.x + t2*(p2.x-p1.x);
+        float y = p1.y + t2*(p2.y-p1.y);
+        intersectionPoints.push_back(ofVec3f(x,y,currentLayer.layerHeight));
+        currentLayer.intersectionpoints.push_back(ofVec3f(x,y,currentLayer.layerHeight));
+    }
+    //Create a polyline segment
+    if(intersectionPoints.size() > 1){
+        ofPolyline line;
+        line.begin();
+        line.addVertex(intersectionPoints[0].x, intersectionPoints[0].y,intersectionPoints[0].z);
+        line.addVertex(intersectionPoints[1].x, intersectionPoints[1].y,intersectionPoints[1].z);
+        line.end();
+        currentLayer.segments.push_back(line);
+    }
+//    ofVec3f vec0 = _orig.operator-(_target0);
+//    ofVec3f vec1 = _orig.operator-(_target1);
+//
+//    float t0 = (layerHeight-_target0.z)/vec0.z;
+//    float t1 = (layerHeight-_target1.z)/vec1.z;
+//    float x0 =_target0.x+vec0.x*t0;
+//    float x1 =_target1.x+vec1.x*t1;
+//    float y0 =_target0.y+vec0.y*t0;
+//    float y1 =_target1.y+vec1.y*t1;
+//
+//    ofVec3f interPoint0 = ofVec3f(x0,y0,currentLayer.layerHeight);
+//    ofVec3f interPoint1 = ofVec3f(x1,y1, currentLayer.layerHeight);
+//
+//    //add intersection points to vector
+//    currentLayer.intersectionpoints.push_back(interPoint0);
+//    currentLayer.intersectionpoints.push_back(interPoint1);
+//
+//    //create line segment
+//    ofPolyline line;
+//    line.begin();
+//    line.addVertex(interPoint0.x, interPoint0.y, currentLayer.layerHeight);
+//    line.addVertex(interPoint1.x, interPoint1.y, currentLayer.layerHeight);
+//    line.end();
+//    currentLayer.segments.push_back(line);
 }
 
 //Creates contour from intersection points
