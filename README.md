@@ -52,11 +52,15 @@ To improve the speed of the algorithm the triangles that are finished processed 
 ![active triangles](docs/img/triangle_slicing-02.png)
 
 
-### Creating the toolpaths // Contour Construction 
+### Creating the jobs // Contour Construction 
 
-Once the triangle intersection algorithm has swept trough all of the triangles I basically have a bunch of layers containing intersection points relevant to that layer. From this, I want to create a set of polygons, or contours,  that essentially is my toolpaths. To find the polygons
+Once the triangle intersection algorithm has swept trough all of the triangles I basically have a bunch of layers containing intersection points relevant to that layer.  From this, I want to create sets of polygons, or contours, that essentially is the jobs that need to be performed on each layer. Ive illustrated the problem in the figure below. 
 
-Basically this means that they build a indexed table of all points in the layer,  where the point itself is used as the index key, and it´s neighboor points is it the key´s belonging values.  I have tried to illustrate this in the figure below.
+TODO: add figure of problem
+
+So solve the problem I define a hash table where each point in the contour is defined as the index key of the table and the neighboor points is the keys belonging values, like so: 
+
+TODO: insert example of hash table 
 
 TODO: Insert figure here. 
 

@@ -186,6 +186,7 @@ void ofxSlicer::intersectionCalc(ofVec3f &p0, ofVec3f&p1, ofVec3f &p2, Layer &cu
 }
 
 //Creates contour from intersection points
+//review this function and its sub-function. Something is fishy...
 void ofxSlicer::createContours(Layer &currentLayer){
     //create the an initial hash table
     //    typedef std::multimap<char, int>::iterator MMAPIterator;
@@ -296,6 +297,7 @@ void ofxSlicer::threadedFunction(){
         stopSlice();
         sliceFinished = true;
         std::cout << "sliced!" << endl;
+        currentTask = ""; 
         //Run slicer animation and update relevant GUI.
     }
 }
