@@ -1,6 +1,6 @@
 # ofxSlicer
 
-Slices mesh geometry into layers consisting of curves. Written in c++ as an addon for Openframeworks. Currently missing any form off infill strategy and .gcode generation. 
+Slices mesh geometry into layers consisting of curves. Written in c++ as an addon for Openframeworks. Currently missing any form of infill strategy and .gcode generation. 
 
 ![current](docs/img/currentOverview.png)
 
@@ -64,6 +64,7 @@ TODO: insert example of hash table
 
 TODO: Insert figure here. 
 
+### Adding infill lines 
 
 ### Threading in C++
 
