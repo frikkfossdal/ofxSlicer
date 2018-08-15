@@ -51,8 +51,8 @@ private:
     void intersectionCalc(ofVec3f &p0, ofVec3f &p1, ofVec3f &p2, Layer &currentLayer);
     void createContours(Layer &currentLayer);
     void insertHash(map<vec2key,pair<ofVec3f, ofVec3f>> &_hash, ofVec3f v, ofVec3f u);
-    std::vector<ofVec3f> startLoop (map<vec2key, pair<ofVec3f, ofVec3f>> &_hash);
-    void addToLoop(std::vector<ofVec3f> &_contour, map<vec2key, pair<ofVec3f, ofVec3f>> &_hash);
+    void startLoop (map<vec2key, pair<ofVec3f, ofVec3f>> &_hash, ofPolyline &_currentContour);
+    void addToLoop(ofPolyline &_currentContour, map<vec2key, pair<ofVec3f, ofVec3f>> &_hash);
 };
 //TODO:
 //1. Add segments
